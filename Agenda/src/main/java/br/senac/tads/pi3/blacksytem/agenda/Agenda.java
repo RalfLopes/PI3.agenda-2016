@@ -176,6 +176,32 @@ public class Agenda {
         
         
     }
+    
+    public void deletarPessoa(int idPessoa) throws SQLException, ClassNotFoundException{
+         obterConexao();
+     try {
+         PreparedStatement stm= null;
+         Connection conn =null;
+         
+         
+         String sql= "DELETE FROM Pessoas WHERE ID_PESSOA =?";
+         stm.setInt(1, idPessoa);
+        
+         stm= conn.prepareStatement(sql);
+         stm.execute();
+         
+         stm.close();
+         
+         System.out.println("Usuário excluido com sucesso!! ");
+     } catch (SQLException e) {
+         System.out.println("Não foi possivel a conexão com banco de dados"+ e.getMessage());
+                 
+     }
+     catch(NullPointerException e){
+         System.out.println("Dados não inicializados"+ e.getMessage());
+     }
+     
+    }
 
 }
     
