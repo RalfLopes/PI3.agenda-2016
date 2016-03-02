@@ -25,25 +25,42 @@ import javax.swing.JOptionPane;
 public class Agenda {
     
  static Scanner leia = new Scanner(System.in); 
+ 
+    public static void main(String[] args) {
+        int escolher =0;
+        while(escolher!=1){
+        System.out.println("digite 1 para liostar e 2 para inserir");
+        int n = leia.nextInt();
+        if (n==1){
+            listarPessoas();
+        }
+        
+        else { 
+            inserirPessoas();
+        }    
+        System.out.println("Deseja parar (1=sim)");
+        escolher=leia.nextInt();
+    }
+    }
 
-    private Connection obterConexao() throws SQLException, ClassNotFoundException {
+    private static Connection obterConexao() throws SQLException, ClassNotFoundException {
         Connection conn = null;
         // Passo 1: Registrar driver JDBC.
         Class.forName("org.apache.derby.jdbc.ClientDataSource");
 
         // Passo 2: Abrir a conexÃ£o
         conn = DriverManager.getConnection(
-                "jdbc:derby://localhost:1527/agendabd;SecurityMechanism=3",
+                "jdbc:derby://localhost:1527/sample; SecurityMechanism=3",
                 "app", // usuario
                 "app"); // senha
         return conn;
     }
 
-    public void listarPessoas() {
+    public static void listarPessoas() {
         Statement stmt = null;
         Connection conn = null;
 
-        String sql = "SELECT ID_PESSOA, NM_PESSOA, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL FROM TB_PESSOA";
+        String sql = "SELECT ID_CONTATO, NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL FROM TB_CONTATO";
         try {
             conn = obterConexao();
             stmt = conn.createStatement();
@@ -52,8 +69,8 @@ public class Agenda {
             DateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
 
             while (resultados.next()) {
-                Long id = resultados.getLong("ID_PESSOA");
-                String nome = resultados.getString("NM_PESSOA");
+                Long id = resultados.getLong("ID_CONTATO");
+                String nome = resultados.getString("NM_CONTATO");
                 Date dataNasc = resultados.getDate("DT_NASCIMENTO");
                 String email = resultados.getString("VL_EMAIL");
                 String telefone = resultados.getString("VL_TELEFONE");
@@ -82,7 +99,7 @@ public class Agenda {
         }
     }
     
-    public void inserirPessoas(){
+    public static void inserirPessoas(){
         
         Statement stmt = null;
         PreparedStatement stm = null;
@@ -100,7 +117,7 @@ public class Agenda {
         Contato contato = new Contato(nome, data, telefone, email);
         
         try {
-            String sql = "INSERT INTO TB_PESSOA ( NM_PESSOA, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL), values(?,?,?,?)";
+            String sql = "INSERT INTO TB_CONTATO ( NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL), values(?,?,?,?)";
             conn= obterConexao();
         
             stm = conn.prepareStatement(sql);
@@ -123,6 +140,23 @@ public class Agenda {
         } catch (ClassNotFoundException ex) {
             System.out.println("Dado não inserido.");
         }
+        
+    }
+    
+    public void alterarPessoas(){
+        
+        Statement stmt = null;
+        PreparedStatement stm = null;
+        Connection conn = null;
+        
+        System.out.println("Insira o nome da pessoa que deseja alterar");
+        String nome = leia.next();
+        Contato contato = new Contato(nome);
+        
+        String sql = "SELECT ID_CONTATO, NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL FROM TB_CONTATO ";
+        
+        
+        
         
     }
 

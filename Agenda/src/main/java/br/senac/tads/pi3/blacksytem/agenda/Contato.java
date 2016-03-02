@@ -22,6 +22,10 @@ public class Contato {
         this.TELEFONE = TELEFONE;
         this.VL_EMAIL = VL_EMAIL;
     }
+    
+    public Contato(String NM_PESSOA){
+        this.NM_PESSOA = NM_PESSOA;
+    }
 
     public String getNM_PESSOA() {
         return NM_PESSOA;
