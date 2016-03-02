@@ -25,7 +25,7 @@ import javax.swing.JOptionPane;
 public class Agenda {
     
  static Scanner leia = new Scanner(System.in); 
- 
+    //Metodo principal.
     public static void main(String[] args) {
         int escolher =0;
         while(escolher!=1){
@@ -42,7 +42,7 @@ public class Agenda {
         escolher=leia.nextInt();
     }
     }
-
+    //Estabelece a conexão com o banco.
     private static Connection obterConexao() throws SQLException, ClassNotFoundException {
         Connection conn = null;
         // Passo 1: Registrar driver JDBC.
@@ -55,15 +55,21 @@ public class Agenda {
                 "app"); // senha
         return conn;
     }
-
+    //Metodo criado pelo professor, lista o banco na saida.
     public static void listarPessoas() {
+        
+        
         Statement stmt = null;
         Connection conn = null;
-
+        
+        
         String sql = "SELECT ID_CONTATO, NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL FROM TB_CONTATO";
         try {
+            
+            
             conn = obterConexao();
             stmt = conn.createStatement();
+            
             ResultSet resultados = stmt.executeQuery(sql);
 
             DateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
@@ -98,33 +104,44 @@ public class Agenda {
             }
         }
     }
-    
+    //Metodo que insere os dados no banco, Erro quando pede os dados, pois o software não espera a entrada de dados para continuar
     public static void inserirPessoas(){
+        
         
         Statement stmt = null;
         PreparedStatement stm = null;
         Connection conn = null;
         
+        //Solicita os dados ao usuario.
         System.out.println("Insira nome do contato");
         String nome = leia.next();
+        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
         System.out.println("Insira Data de Nascimento");
         String data = leia.next();
+        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
         System.out.println("Insira Telefone");
         String telefone = leia.next();
+        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
         System.out.println("Insira E-mail");
         String email = leia.next();
+        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
         
+        
+        //Cria um novo objeto Contato.
         Contato contato = new Contato(nome, data, telefone, email);
         
         try {
+            
             String sql = "INSERT INTO TB_CONTATO ( NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL), values(?,?,?,?)";
             conn= obterConexao();
-        
+            
+            //Insere os dados no banco.
             stm = conn.prepareStatement(sql);
             stm.setString(1, contato.getNM_PESSOA());
             stm.setString(2, contato.getDT_NASCIMENTO());
             stm.setString(3, contato.getTELEFONE());
             stm.setString(4, contato.getVL_EMAIL());    
+            
             
             stm.executeUpdate();
             System.out.println("Cadastro realizado com Sucesso");
@@ -142,7 +159,7 @@ public class Agenda {
         }
         
     }
-    
+    //Incompleto!!!!!!
     public void alterarPessoas(){
         
         Statement stmt = null;
