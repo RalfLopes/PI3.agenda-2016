@@ -5,6 +5,11 @@
  */
 package br.senac.tads.pi3.blacksytem.agenda;
 
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
+import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -25,11 +30,12 @@ import javax.swing.JOptionPane;
  */
 public class Agenda {
 
-    static Scanner leia = new Scanner(System.in);
+   static InputStreamReader ir = new InputStreamReader(System.in);
+   static BufferedReader in = new BufferedReader(ir);
 
     //Metodo principal.
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException, IOException {
 
         opcaoAgenda();
 
@@ -100,7 +106,7 @@ public class Agenda {
 
     //Metodo que insere os dados no banco, Erro quando pede os dados, pois o software não espera a entrada de dados para continuar
 
-    public static void inserirPessoas() {
+    public static void inserirPessoas() throws IOException {
 
         Statement stmt = null;
         PreparedStatement stm = null;
@@ -184,12 +190,12 @@ public class Agenda {
 
     }
 
-    public static void opcaoAgenda() {
+    public static void opcaoAgenda() throws IOException {
 
         System.out.println("========================================\n 1 - Listar"
                 + "\n 2- Inserir \n 3- Alterar \n 4- Deletar \n 5- Sair"
                 + "\n======================================");
-        int opcao = leia.nextInt();
+        int opcao = Integer.parseInt(in.readLine());
         switch (opcao) {
 
             case 1:
@@ -200,10 +206,10 @@ public class Agenda {
                 break;
             case 3: 
                 
-                alterarPessoas();
+                //alterarPessoas(2);
                 break;
             case 4:
-                deletarPessoa(opcao);
+                //deletarPessoa(2);
                 break;
                 
             case 5 :
@@ -216,20 +222,22 @@ public class Agenda {
 
     }
     
-    public static Contato pedirDados(){
+    public static Contato pedirDados() throws IOException{
+        
+        DateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
         
         //Solicita os dados ao usuario.
         System.out.println("Insira nome do contato");
-        String nome = leia.next();
+        String nome = in.readLine();
         //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
         System.out.println("Insira Data de Nascimento");
-        String data = leia.next();
+        String data = in.readLine();
         //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
         System.out.println("Insira Telefone");
-        String telefone = leia.next();
+        String telefone = in.readLine();
         //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
         System.out.println("Insira E-mail");
-        String email = leia.next();
+        String email = in.readLine();
         //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
         
         Contato dados = new Contato(nome, data, telefone, email);
