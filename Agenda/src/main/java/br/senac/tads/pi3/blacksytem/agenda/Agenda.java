@@ -140,18 +140,22 @@ public class Agenda {
 
     //Incompleto!!!!!!
 
-    public static void alterarPessoas() {
+    public static void alterarPessoas(int idPessoa,String pessoa) {
 
         Statement stmt = null;
         PreparedStatement stm = null;
         Connection conn = null;
 
-        System.out.println("Insira o ID da pessoa que deseja alterar");
-        String nome = leia.next();
-        Contato contato = new Contato(nome);
-
-        String sql = "SELECT ID_CONTATO, NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL FROM TB_CONTATO ";
-        
+        String sql = "UPDATE PESSOAS WHERE ID_PESSOA ='"+ idPessoa+"'" ;
+        try {
+            obterConexao();
+            stm.setString(1,pessoa );
+                        
+        } catch (SQLException ex) {
+            Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
 
     }
@@ -162,7 +166,7 @@ public class Agenda {
             PreparedStatement stm = null;
             Connection conn = null;
 
-            String sql = "DELETE FROM Pessoas WHERE ID_PESSOA =?";
+            String sql = "DELETE FROM Pessoas WHERE ID_PESSOA ='"+ idPessoa+"'";
             stm.setInt(1, idPessoa);
 
             stm = conn.prepareStatement(sql);
