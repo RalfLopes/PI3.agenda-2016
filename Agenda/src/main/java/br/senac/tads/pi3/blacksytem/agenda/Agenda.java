@@ -10,6 +10,7 @@ import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -30,11 +31,10 @@ import javax.swing.JOptionPane;
  */
 public class Agenda {
 
-   static InputStreamReader ir = new InputStreamReader(System.in);
-   static BufferedReader in = new BufferedReader(ir);
+    static InputStreamReader ir = new InputStreamReader(System.in);
+    static BufferedReader in = new BufferedReader(ir);
 
     //Metodo principal.
-
     public static void main(String[] args) throws SQLException, ClassNotFoundException, IOException {
 
         opcaoAgenda();
@@ -42,7 +42,6 @@ public class Agenda {
     }
 
     //Estabelece a conexão com o banco.
-
     private static Connection obterConexao() throws SQLException, ClassNotFoundException {
         Connection conn = null;
         // Passo 1: Registrar driver JDBC.
@@ -57,7 +56,6 @@ public class Agenda {
     }
 
     //Metodo criado pelo professor, lista o banco na saida.
-
     public static void listarPessoas() {
 
         Statement stmt = null;
@@ -105,7 +103,6 @@ public class Agenda {
     }
 
     //Metodo que insere os dados no banco, Erro quando pede os dados, pois o software não espera a entrada de dados para continuar
-
     public static void inserirPessoas() throws IOException {
 
         Statement stmt = null;
@@ -115,10 +112,9 @@ public class Agenda {
         Contato contato = pedirDados();
 
         //Cria um novo objeto Contato.
-
         try {
 
-            String sql = "INSERT INTO TB_CONTATO ( NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL), values(?,?,?,?)";
+            String sql = "INSERT INTO TB_CONTATO ( NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL) values(?,?,?,?, CURRENT_TIMESTAMP)";
             conn = obterConexao();
 
             //Insere os dados no banco.
@@ -145,37 +141,37 @@ public class Agenda {
     }
 
     //Incompleto!!!!!!
-
-    public static void alterarPessoas(int idPessoa,String pessoa) {
+    public static void alterarPessoas(int idPessoa, String pessoa) {
 
         Statement stmt = null;
         PreparedStatement stm = null;
         Connection conn = null;
 
-        String sql = "UPDATE PESSOAS WHERE ID_PESSOA ='"+ idPessoa+"'" ;
+        String sql = "UPDATE PESSOAS WHERE ID_PESSOA ='" + idPessoa + "'";
         try {
-            obterConexao();
-            stm.setString(1,pessoa );
-                        
+            conn = obterConexao();
+            stm.setString(1, pessoa);
+
         } catch (SQLException ex) {
             Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
 
     }
 
-    public static void deletarPessoa(int idPessoa) throws SQLException, ClassNotFoundException {
-        obterConexao();
+    public static void deletarPessoa(long idPessoa) throws SQLException, ClassNotFoundException {
+
+        Statement stmt = null;
+        PreparedStatement stm = null;
+        Connection conn = null;
+
         try {
-            PreparedStatement stm = null;
-            Connection conn = null;
-
-            String sql = "DELETE FROM Pessoas WHERE ID_PESSOA ='"+ idPessoa+"'";
-            stm.setInt(1, idPessoa);
-
+            conn = obterConexao();
+            String sql = "delete from TB_CONTATO where ID_CONTATO = ?";
             stm = conn.prepareStatement(sql);
+            stm.setLong(1, idPessoa);
+
             stm.execute();
 
             stm.close();
@@ -190,7 +186,7 @@ public class Agenda {
 
     }
 
-    public static void opcaoAgenda() throws IOException {
+    public static void opcaoAgenda() throws IOException, ClassNotFoundException, SQLException {
 
         System.out.println("========================================\n 1 - Listar"
                 + "\n 2- Inserir \n 3- Alterar \n 4- Deletar \n 5- Sair"
@@ -204,28 +200,31 @@ public class Agenda {
             case 2:
                 inserirPessoas();
                 break;
-            case 3: 
-                
+            case 3:
+
                 //alterarPessoas(2);
                 break;
             case 4:
-                //deletarPessoa(2);
+                Scanner leia = new Scanner(System.in);
+                long idPessoa = leia.nextInt();
+                System.out.println("Entre com o ID a ser excluído");
+
+                deletarPessoa(idPessoa);
                 break;
-                
-            case 5 :
+
+            case 5:
                 System.exit(opcao);
-                default:
-                    
-                    opcaoAgenda();
+            default:
+
+                opcaoAgenda();
         }
-       
 
     }
-    
-    public static Contato pedirDados() throws IOException{
-        
+
+    public static Contato pedirDados() throws IOException {
+
         DateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
-        
+
         //Solicita os dados ao usuario.
         System.out.println("Insira nome do contato");
         String nome = in.readLine();
@@ -239,9 +238,9 @@ public class Agenda {
         System.out.println("Insira E-mail");
         String email = in.readLine();
         //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
-        
+
         Contato dados = new Contato(nome, data, telefone, email);
-        
+
         return dados;
     }
 
