@@ -44,7 +44,7 @@ public class Agenda {
 
         // Passo 2: Abrir a conexÃ£o
         conn = DriverManager.getConnection(
-                "jdbc:derby://localhost:1527/sample; SecurityMechanism=3",
+                "jdbc:derby://localhost:1527/agendabd; SecurityMechanism=3",
                 "app", // usuario
                 "app"); // senha
         return conn;
@@ -106,22 +106,9 @@ public class Agenda {
         PreparedStatement stm = null;
         Connection conn = null;
 
-        //Solicita os dados ao usuario.
-        System.out.println("Insira nome do contato");
-        String nome = leia.next();
-        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
-        System.out.println("Insira Data de Nascimento");
-        String data = leia.next();
-        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
-        System.out.println("Insira Telefone");
-        String telefone = leia.next();
-        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
-        System.out.println("Insira E-mail");
-        String email = leia.next();
-        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
+        Contato contato = pedirDados();
 
         //Cria um novo objeto Contato.
-        Contato contato = new Contato(nome, data, telefone, email);
 
         try {
 
@@ -159,11 +146,13 @@ public class Agenda {
         PreparedStatement stm = null;
         Connection conn = null;
 
-        System.out.println("Insira o nome da pessoa que deseja alterar");
+        System.out.println("Insira o ID da pessoa que deseja alterar");
         String nome = leia.next();
         Contato contato = new Contato(nome);
 
         String sql = "SELECT ID_CONTATO, NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL FROM TB_CONTATO ";
+        
+        
 
     }
 
@@ -208,8 +197,10 @@ public class Agenda {
             case 3: 
                 
                 alterarPessoas();
+                break;
             case 4:
                 deletarPessoa(opcao);
+                break;
                 
             case 5 :
                 System.exit(opcao);
@@ -219,6 +210,27 @@ public class Agenda {
         }
        
 
+    }
+    
+    public static Contato pedirDados(){
+        
+        //Solicita os dados ao usuario.
+        System.out.println("Insira nome do contato");
+        String nome = leia.next();
+        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
+        System.out.println("Insira Data de Nascimento");
+        String data = leia.next();
+        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
+        System.out.println("Insira Telefone");
+        String telefone = leia.next();
+        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
+        System.out.println("Insira E-mail");
+        String email = leia.next();
+        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
+        
+        Contato dados = new Contato(nome, data, telefone, email);
+        
+        return dados;
     }
 
 }
