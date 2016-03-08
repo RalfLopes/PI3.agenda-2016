@@ -5,6 +5,8 @@
  */
 package br.senac.tads.pi3.blacksytem.agenda;
 
+import java.sql.Date;
+
 /**
  *
  * @author temp.cas
@@ -12,19 +14,19 @@ package br.senac.tads.pi3.blacksytem.agenda;
 public class Contato {
     
     private String NM_PESSOA;
-    private String DT_NASCIMENTO;
+    private Date DT_NASCIMENTO;
     private String TELEFONE;
     private String VL_EMAIL;
 
-    public Contato(String NM_PESSOA, String DT_NASCIMENTO, String TELEFONE, String VL_EMAIL) {
+    public Contato(String NM_PESSOA){
+        this.NM_PESSOA = NM_PESSOA;
+    }
+
+    public Contato(String NM_PESSOA, Date DT_NASCIMENTO, String TELEFONE, String VL_EMAIL) {
         this.NM_PESSOA = NM_PESSOA;
         this.DT_NASCIMENTO = DT_NASCIMENTO;
         this.TELEFONE = TELEFONE;
         this.VL_EMAIL = VL_EMAIL;
-    }
-    
-    public Contato(String NM_PESSOA){
-        this.NM_PESSOA = NM_PESSOA;
     }
 
     public String getNM_PESSOA() {
@@ -35,11 +37,11 @@ public class Contato {
         this.NM_PESSOA = NM_PESSOA;
     }
 
-    public String getDT_NASCIMENTO() {
+    public Date getDT_NASCIMENTO() {
         return DT_NASCIMENTO;
     }
 
-    public void setDT_NASCIMENTO(String DT_NASCIMENTO) {
+    public void setDT_NASCIMENTO(Date DT_NASCIMENTO) {
         this.DT_NASCIMENTO = DT_NASCIMENTO;
     }
 
@@ -58,6 +60,10 @@ public class Contato {
     public void setVL_EMAIL(String VL_EMAIL) {
         this.VL_EMAIL = VL_EMAIL;
     }
+
+    
+    
+   
     
     
     

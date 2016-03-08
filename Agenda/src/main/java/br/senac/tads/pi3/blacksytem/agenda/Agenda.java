@@ -120,7 +120,7 @@ public class Agenda {
             //Insere os dados no banco.
             stm = conn.prepareStatement(sql);
             stm.setString(1, contato.getNM_PESSOA());
-            stm.setString(2, contato.getDT_NASCIMENTO());
+            stm.setDate(2, contato.getDT_NASCIMENTO());
             stm.setString(3, contato.getTELEFONE());
             stm.setString(4, contato.getVL_EMAIL());
 
