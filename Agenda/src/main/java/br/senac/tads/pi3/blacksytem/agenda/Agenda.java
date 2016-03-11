@@ -19,8 +19,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -33,6 +35,8 @@ public class Agenda {
 
     static InputStreamReader ir = new InputStreamReader(System.in);
     static BufferedReader in = new BufferedReader(ir);
+    private static Object entrada;
+    static Scanner ler = new Scanner(System.in);
 
     //Metodo principal.
     public static void main(String[] args) throws SQLException, ClassNotFoundException, IOException {
@@ -120,7 +124,7 @@ public class Agenda {
             //Insere os dados no banco.
             stm = conn.prepareStatement(sql);
             stm.setString(1, contato.getNM_PESSOA());
-            stm.setDate(2, contato.getDT_NASCIMENTO());
+            stm.setDate(2, new java.sql.Date(contato.getDT_NASCIMENTO().getTime()));
             stm.setString(3, contato.getTELEFONE());
             stm.setString(4, contato.getVL_EMAIL());
 
@@ -223,25 +227,37 @@ public class Agenda {
 
     public static Contato pedirDados() throws IOException {
 
+        String nome;
+        Date dataNasc;
+        String email;
+        String telefone;
+
+        // ENTRADA DE DADOS
+        System.out.print("Digite o nome da pessoa: ");
+        nome = ler.nextLine();
+
+        System.out.print("Digite a data de nascimento no formato dd/mm/aaaa: ");
+        String strDataNasc = ler.nextLine();
         DateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+             dataNasc = (Date) formatadorData.parse(strDataNasc);
+        } catch (ParseException ex) {
+            Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
+            dataNasc = Date();
+        }
+        System.out.print("Digite o telefone no formato 99 99999-9999: ");
+        telefone = ler.nextLine();
 
-        //Solicita os dados ao usuario.
-        System.out.println("Insira nome do contato");
-        String nome = in.readLine();
-        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
-        System.out.println("Insira Data de Nascimento");
-        String data = in.readLine();
-        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
-        System.out.println("Insira Telefone");
-        String telefone = in.readLine();
-        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
-        System.out.println("Insira E-mail");
-        String email = in.readLine();
-        //Tem alguma função que força o codigo a esperar a entrada, mas eu não lembro qual é!
+        System.out.print("Digite o e-mail: ");
+        email = ler.nextLine();
 
-        Contato dados = new Contato(nome, data, telefone, email);
+        Contato contato = new Contato(nome, dataNasc, telefone, email);
 
-        return dados;
+        return contato;
+    }
+
+    private static Date Date() {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }
