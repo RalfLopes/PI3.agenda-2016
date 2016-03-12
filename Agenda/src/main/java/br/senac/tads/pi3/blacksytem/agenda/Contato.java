@@ -5,7 +5,7 @@
  */
 package br.senac.tads.pi3.blacksytem.agenda;
 
-import java.sql.Date;
+import java.util.Date;
 
 /**
  *

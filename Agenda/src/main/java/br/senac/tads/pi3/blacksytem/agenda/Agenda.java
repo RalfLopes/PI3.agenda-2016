@@ -5,14 +5,10 @@
  */
 package br.senac.tads.pi3.blacksytem.agenda;
 
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
-import static com.sun.org.apache.xalan.internal.lib.ExsltDatetime.date;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigDecimal;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -22,10 +18,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Scanner;
-import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import java.util.Date;
 
 /**
  *
@@ -118,7 +114,7 @@ public class Agenda {
         //Cria um novo objeto Contato.
         try {
 
-            String sql = "INSERT INTO TB_CONTATO ( NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL) values(?,?,?,?, CURRENT_TIMESTAMP)";
+            String sql = "INSERT INTO TB_CONTATO ( NM_CONTATO, DT_NASCIMENTO, VL_TELEFONE, VL_EMAIL, DT_CADASTRO) values(?,?,?,?, CURRENT_TIMESTAMP)";
             conn = obterConexao();
 
             //Insere os dados no banco.
@@ -130,7 +126,6 @@ public class Agenda {
 
             stm.executeUpdate();
             System.out.println("Cadastro realizado com Sucesso");
-            JOptionPane.showMessageDialog(null, "Cadastro realizado com Sucesso");
             stm.close();
             conn.close();
 
@@ -145,22 +140,58 @@ public class Agenda {
     }
 
     //Incompleto!!!!!!
-    public static void alterarPessoas(int idPessoa, String pessoa) {
+    public static void alterarPessoas(long idPessoa,String nome) {
 
-        Statement stmt = null;
-        PreparedStatement stm = null;
+        PreparedStatement stmt = null;
         Connection conn = null;
 
-        String sql = "UPDATE PESSOAS WHERE ID_PESSOA ='" + idPessoa + "'";
+       
         try {
+            String sql = "UPDATE TB_CONTATO SET NM_CONTATO = ? WHERE ID_CONTATO = ?";
             conn = obterConexao();
-            stm.setString(1, pessoa);
-
+            stmt = conn.prepareStatement(sql);
+            
+            stmt.setString(1, nome);
+            stmt.setLong(2, idPessoa);
+            stmt.executeUpdate();
+            stmt.close();
+            conn.close();
         } catch (SQLException ex) {
             Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NullPointerException ex) {
+            System.out.println("não inicializado");
         }
+
+    }
+
+    public static long buscarIdContato(String nome) throws ClassNotFoundException {
+        long n = 0;
+
+        Statement stmt = null;
+
+        Connection conn = null;
+        ResultSet rs = null;
+
+        try {
+            String sql = "select * from TB_CONTATO where NM_CONTATO = '" + nome + "'";
+            conn = obterConexao();
+            stmt = conn.createStatement();
+            rs = stmt.executeQuery(sql);
+
+            n = rs.getLong("ID_CONTATO");
+
+            stmt.close();
+
+        } catch (SQLException ex) {
+            System.err.println("Falha ao buscar ID do contato.\n" + ex);
+        } catch (NullPointerException ex) {
+
+            System.out.println("não inicializado");
+        }
+
+        return n;
 
     }
 
@@ -200,27 +231,37 @@ public class Agenda {
 
             case 1:
                 listarPessoas();
+                opcaoAgenda();
                 break;
             case 2:
                 inserirPessoas();
+                opcaoAgenda();
                 break;
             case 3:
 
-                //alterarPessoas(2);
+                System.out.println("Entre com o n do contato a ser alterado");
+//                String nome = ler.nextLine();
+                long n = ler.nextLong();
+                 System.out.print("Digite o novo nome da pessoa: ");
+                  String nome = ler.next();
+                alterarPessoas(n,nome);
+                opcaoAgenda();
                 break;
             case 4:
-                Scanner leia = new Scanner(System.in);
-                long idPessoa = leia.nextInt();
-                System.out.println("Entre com o ID a ser excluído");
 
+                System.out.println("Entre com o ID a ser excluído");
+                long idPessoa = ler.nextInt();
                 deletarPessoa(idPessoa);
+                opcaoAgenda();
                 break;
 
             case 5:
                 System.exit(opcao);
+                break;
             default:
 
                 opcaoAgenda();
+                break;
         }
 
     }
@@ -240,7 +281,7 @@ public class Agenda {
         String strDataNasc = ler.nextLine();
         DateFormat formatadorData = new SimpleDateFormat("dd/MM/yyyy");
         try {
-             dataNasc = (Date) formatadorData.parse(strDataNasc);
+            dataNasc = formatadorData.parse(strDataNasc);
         } catch (ParseException ex) {
             Logger.getLogger(Agenda.class.getName()).log(Level.SEVERE, null, ex);
             dataNasc = Date();
